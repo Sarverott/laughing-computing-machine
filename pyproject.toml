@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "tickable"
-version = "0.1.0"
+version = "0.2.0"
 description = "madness in darkness that is positive and funny after reaching point behind"
 authors = ["Sett Sarverott <sarverott@gmail.com>"]
 license = "CC BY-SA 4.0"

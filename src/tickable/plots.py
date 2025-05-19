@@ -3,6 +3,71 @@ import pandas as pd
 from matplotlib import pyplot as plt
 import seaborn as sns
 
+def plot_first_move_preference(preference_census):
+    cumulative = np.sum(preference_census, axis=0)
+    df = pd.DataFrame(cumulative, columns=["A", "B", "C"], index=["1", "2", "3"])
+    plt.figure(figsize=(6, 5))
+    sns.heatmap(df, annot=True, cmap="YlGnBu", cbar=True)
+    plt.title("Skumulowana preferencja pól (pierwszy ruch)")
+    plt.tight_layout()
+    plt.show()
+
+def plot_fitness_over_time(fitness_history):
+    avg_fitness = [np.mean(gen) for gen in fitness_history]
+    max_fitness = [np.max(gen) for gen in fitness_history]
+
+    plt.figure(figsize=(10, 5))
+    plt.plot(avg_fitness, label="Średni fitness")
+    plt.plot(max_fitness, label="Maksymalny fitness")
+    plt.title("Ewolucja fitnessu w czasie")
+    plt.xlabel("Pokolenie")
+    plt.ylabel("Fitness")
+    plt.legend()
+    plt.grid(True)
+    plt.tight_layout()
+    plt.show()
+
+def plot_all_statistics(fitness_story, preference_census):
+    generations = len(fitness_story)
+    
+    # Obliczenia metryk
+    avg_fitness = [np.mean(gen) for gen in fitness_story]
+    max_fitness = [np.max(gen) for gen in fitness_story]
+    cumulative_heat = np.sum(preference_census, axis=0)
+
+    # Tworzenie subplots
+    fig, axs = plt.subplots(2, 2, figsize=(14, 10))
+
+    # Fitness w czasie
+    axs[0, 0].plot(avg_fitness, label="Średni fitness")
+    axs[0, 0].plot(max_fitness, label="Maksymalny fitness")
+    axs[0, 0].set_title("Fitness w czasie")
+    axs[0, 0].set_xlabel("Pokolenie")
+    axs[0, 0].set_ylabel("Fitness")
+    axs[0, 0].legend()
+    axs[0, 0].grid(True)
+
+    # Heatmapa finalna
+    final_heat = preference_census[-1]
+    final_df = pd.DataFrame(final_heat, columns=["A", "B", "C"], index=["1", "2", "3"])
+    sns.heatmap(final_df, annot=True, cmap="coolwarm", cbar=True, ax=axs[0, 1])
+    axs[0, 1].set_title("Preferencje pierwszego ruchu (ostatnia generacja)")
+
+    # Heatmapa skumulowana
+    cumulative_df = pd.DataFrame(cumulative_heat, columns=["A", "B", "C"], index=["1", "2", "3"])
+    sns.heatmap(cumulative_df, annot=True, cmap="coolwarm", cbar=True, ax=axs[1, 0])
+    axs[1, 0].set_title("Preferencje pierwszego ruchu (skumulowane)")
+
+    # Histogram dominujących pól
+    dominant_counts = cumulative_heat.flatten()
+    axs[1, 1].bar(range(9), dominant_counts, tick_label=[f"{i//3},{i%3}" for i in range(9)])
+    axs[1, 1].set_title("Dominacja pól w łącznych preferencjach")
+    axs[1, 1].set_xlabel("Pozycja pola (rząd, kolumna)")
+    axs[1, 1].set_ylabel("Liczba wyborów")
+
+    plt.tight_layout()
+    plt.show()
+
 def display_game_state(game):
     board = game.display_board()
     state = game.state()

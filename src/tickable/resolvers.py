@@ -3,24 +3,29 @@ import random
 from tickable import games, defines
 
 class PlayerAgent:
-    char = ""
-    name = "me"
+    char = ""  # np. "X" lub "O"
+    name = "undefined"  # identyfikator do movestory
     def choose_move(self, game):
         raise NotImplementedError
 
 class ChaosAgent(PlayerAgent):
+    def __init__(self, char="O", name="Chaos"):
+        self.char = char
+        self.name = name
+
     def choose_move(self, game):
         empty_cells = [i for i, val in enumerate(game.board) if val == 0]
         if empty_cells:
             rand_move = random.choice(empty_cells)
             return (True, divmod(rand_move, 3))
-        else:
-            return (False, None)
+        return (False, None)
 
 class EvolutionAgent(PlayerAgent):
-    def __init__(self, genome):
-        self.genome = genome  # permutacja 0-8
-        self.cursor = 0       # indeks aktualnego ruchu
+    def __init__(self, genome, char="X", name="Evo"):
+        self.genome = genome  # permutacja 0–8
+        self.cursor = 0
+        self.char = char
+        self.name = name
 
     def choose_move(self, game):
         while self.cursor < len(self.genome):

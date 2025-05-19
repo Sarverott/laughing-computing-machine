@@ -21,8 +21,8 @@ class TicTacToe:
         # inne pola jak poprzednio...
 
     def whose_turn_it_is(self):
-        terms = not self.turn % 2 == 0 ^ self.starts == "antagonist"
-        return self.antagonist if terms else self.protagonist 
+        terms = [not self.turn % 2 == 0, self.starts == "antagonist"]
+        return self.antagonist if terms[0] ^ terms[1] else self.protagonist 
 
     def play_turn(self):
         current_agent = self.whose_turn_it_is()
@@ -36,8 +36,7 @@ class TicTacToe:
     def update(self):
         self.scopes_state = helpers.gamestate(self)
         self.selfcheck()
-        if self.statestory[-1] != self.scopes_state:
-            self.statestory.append(self.scopes_state)
+        self.statestory.append(self.scopes_state)
 
     def move(self, player=None, place=[0, 0]):
         board_coords = place[0]*3 + place[1]

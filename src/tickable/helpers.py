@@ -1,6 +1,8 @@
 import numpy
 from tickable import defines
 
+
+
 def make_histogram(fitness_history, size=9):
     """
     Przekształca historię fitnessów z wielu generacji w histogram

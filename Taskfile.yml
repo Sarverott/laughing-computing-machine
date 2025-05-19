@@ -1,0 +1,30 @@
+# https://taskfile.dev
+
+version: '3'
+
+env:
+  ENV: .github
+
+dotenv: ['.env', '{{.ENV}}/.env', '{{.HOME}}/.env']
+
+vars:
+  PIP_PACKS: pandas matplotlib numpy notebook seaborn deap
+
+tasks:
+  select_ignore:
+    cmds:
+      - curl "https://gist.githubusercontent.com/Sarverott/a9933eea3dd0e4fc54e8ff275bd79dcf/raw/1480f29a978232284788a77162e08e73fb489fd6/selective_ignorance.sh" | bash -s git ruby,python,node 
+    silent: false
+
+  build:
+    cmds:
+#      - python3 -m venv .venv
+#      - source .venv/bin/activate
+#      - pip install poetry
+      - poetry add {{.PIP_PACKS}}
+    silent: false
+
+  default:
+    cmds:
+      - echo "Hello world!"
+    silent: true

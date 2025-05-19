@@ -1,0 +1,21 @@
+[tool.poetry]
+name = "laughing-computing-machine"
+version = "0.1.0"
+description = "madness in darkness that is positive and funny after reaching point behind"
+authors = ["Sett Sarverott <sarverott@gmail.com>"]
+license = "CC BY"
+readme = "README.md"
+
+[tool.poetry.dependencies]
+python = "^3.12"
+pandas = "^2.2.3"
+matplotlib = "^3.10.3"
+numpy = "^2.2.6"
+notebook = "^7.4.2"
+seaborn = "^0.13.2"
+deap = "^1.4.3"
+
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"

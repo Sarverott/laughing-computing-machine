@@ -1,6 +1,6 @@
 import numpy
 from tickable import defines
-
+import zlib
 
 
 def make_histogram(fitness_history, size=9):
@@ -79,6 +79,19 @@ def axis_scoping(*single_or_many_arrays):
         else:
             return output_list
 # ddd
+
+def signat_for_statemove(scopes_state):
+    return "-".join(
+        [
+            zlib.adler32(str(chain_var))
+            for chain_var in [
+                scopes_state[0],
+                scopes_state[1],
+                "".join(scopes_state[2])
+            ]
+        ]
+    )
+
 
 
 def gamestate(game):

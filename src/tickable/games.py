@@ -18,6 +18,7 @@ class TicTacToe:
         self.ended = False
         self.antagonist = antagonist
         self.protagonist = protagonist
+        self.scopes_state = helpers.gamestate(self)
         resolvers.games_record.append(self)
         # inne pola jak poprzednio...
 
@@ -29,6 +30,10 @@ class TicTacToe:
         current_agent = self.whose_turn_it_is()
         is_moving, move = current_agent.choose_move(self)
         if is_moving and move:
+            tactic_sign = helpers.signat_for_statemove(self.scopes_state)
+            if tactic_sign not in resolvers.tactic_almanac:
+                resolvers.tactic_almanac[tactic_sign] = list()
+            resolvers.tactic_almanac[tactic_sign].append([move, self])
             self.movestory.append((current_agent.name, move))
             self.move(current_agent.char, move)
             self.update()
@@ -42,7 +47,6 @@ class TicTacToe:
     def move(self, player=None, place=[0, 0]):
         board_coords = place[0]*3 + place[1]
         self.board[board_coords] = defines.humanish_view[player]
-
 
     def selfcheck(self):
         playable = False

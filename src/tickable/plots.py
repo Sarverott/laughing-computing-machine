@@ -2,6 +2,40 @@ import numpy as np
 import pandas as pd
 from matplotlib import pyplot as plt
 import seaborn as sns
+from mpl_toolkits.mplot3d import Axes3D
+
+def plot_fitness_3d(fitness_story):
+    """
+    Wizualizuje trajektorie fitnessów populacji w czasie w 3D.
+    Każdy osobnik to linia w przestrzeni pokoleń (x), fitnessu (z), i indeksu (y).
+    Najlepszy osobnik ostatniego pokolenia wyróżniony czerwonym kolorem.
+    """
+    generations = len(fitness_story)
+    population_size = len(fitness_story[0]) if generations > 0 else 0
+
+    fig = plt.figure(figsize=(14, 8))
+    ax = fig.add_subplot(111, projection='3d')
+
+    # Transponujemy dane: osobnik → lista fitnessów w czasie
+    fitness_array = np.array(fitness_story).T
+
+    # Zaznaczamy najlepszego osobnika
+    best_index = np.argmax(fitness_array[:, -1])
+
+    for i, fitness_track in enumerate(fitness_array):
+        x = np.arange(generations)
+        y = np.full_like(x, i)
+        z = fitness_track
+        color = 'red' if i == best_index else 'saddlebrown'
+        alpha = 1.0 if i == best_index else 0.4
+        ax.plot(x, y, z, color=color, alpha=alpha)
+
+    ax.set_title("Fitness 3D – trajektorie osobników w czasie")
+    ax.set_xlabel("Pokolenie")
+    ax.set_ylabel("Indeks osobnika")
+    ax.set_zlabel("Fitness")
+    plt.tight_layout()
+    plt.show()
 
 def plot_first_move_preference(preference_census):
     cumulative = np.sum(preference_census, axis=0)
@@ -155,3 +189,24 @@ def make_histogram(fitness_history, size=9):
         "win": expanded,
         "lose": 1 - expanded
     }
+
+def plot_genome_similarity(population):
+    """
+    Tworzy heatmapę podobieństwa genotypów (macierz Hamming distance).
+    """
+    n = len(population)
+    similarity_matrix = np.zeros((n, n))
+
+    # Hamming distance: ile pozycji jest różnych
+    for i in range(n):
+        for j in range(n):
+            similarity_matrix[i, j] = np.sum(np.array(population[i]) != np.array(population[j]))
+
+    df = pd.DataFrame(similarity_matrix)
+    plt.figure(figsize=(10, 8))
+    sns.heatmap(df, annot=False, cmap='coolwarm', square=True, cbar_kws={'label': 'Dystans Hammingowy'})
+    plt.title("Macierz podobieństwa genotypów")
+    plt.xlabel("Osobnik")
+    plt.ylabel("Osobnik")
+    plt.tight_layout()
+    plt.show()

@@ -3,6 +3,7 @@ import pandas as pd
 from matplotlib import pyplot as plt
 import seaborn as sns
 from mpl_toolkits.mplot3d import Axes3D
+import matplotlib.gridspec as gridspec
 
 def plot_fitness_3d(fitness_story):
     """
@@ -189,6 +190,41 @@ def make_histogram(fitness_history, size=9):
         "win": expanded,
         "lose": 1 - expanded
     }
+
+def plot_game_sequence(game):
+     """
+    Wyświetla sekwencję ruchów z `game.movestory` jako 3x3 siatkę plansz.
+    Wymaga, by `game` miał atrybuty:
+    - .movestory: lista (name, (x, y))
+    - .board: końcowy stan planszy (numpy.array)
+    """
+    states = []
+    board = np.zeros_like(game.board)
+    for who, move in game.movestory:
+        x, y = move
+        board_copy = board.copy()
+        board_copy[x * 3 + y] = -1 if who == "Evo" else 1
+        states.append(board_copy.reshape(3, 3))
+        board[x * 3 + y] = -1 if who == "Evo" else 1
+
+    num_states = len(states)
+    cols = 3
+    rows = int(np.ceil(num_states / cols))
+
+    fig = plt.figure(figsize=(4 * cols, 4 * rows))
+    spec = gridspec.GridSpec(rows, cols, figure=fig)
+
+    for idx, state in enumerate(states):
+        ax = fig.add_subplot(spec[idx])
+        table_data = [["X" if val == -1 else "O" if val == 1 else "" for val in row] for row in state]
+        table = ax.table(cellText=table_data, loc='center', cellLoc='center', colWidths=[0.2]*3)
+        table.scale(1, 2)
+        ax.axis('off')
+        ax.set_title(f"Ruch {idx+1}", pad=10)
+
+    fig.suptitle("Sekwencja ruchów – gra ewolucyjna", fontsize=16)
+    plt.tight_layout()
+    plt.show()
 
 def plot_genome_similarity(population):
     """

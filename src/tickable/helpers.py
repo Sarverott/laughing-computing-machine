@@ -91,3 +91,21 @@ def gamestate(game):
         matrix[:, 1],
         matrix[:, 2]
     )
+
+def move_on_gamestate(at_state, maked_move): 
+    # powinno przyjąć wynik gamestate przed ruchem 
+    # i wykonany ruch w odpowiedzi
+    state_avg_ptr = ",".join([round((avg[0]+4)*100) for avg in at_state])
+    state_sum_ptr = ",".join([avg[1]+4 for avg in at_state])
+    state_owners_ptr = ",".join(["".join(avg[2]) for avg in at_state])
+    return [maked_move, state_avg_ptr, state_sum_ptr, state_owners_ptr]
+
+def extract_reactive_signature(gamestate_vector, move):
+    return {
+        "reaction": move,
+        "state_signature": {
+            "avg": [round((v[0]+4)*100) for v in gamestate_vector],
+            "sum": [v[1]+4 for v in gamestate_vector],
+            "owners": [tuple(v[2]) for v in gamestate_vector]
+        }
+    }

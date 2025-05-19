@@ -248,7 +248,7 @@ def plot_genome_similarity(population):
     plt.tight_layout()
     plt.show()
 
-def plot_tactic_effectiveness(signature_block):
+def plot_tactic_effectiveness(signature_block): # nie udało się uruchomić
     """
     Rysuje skuteczność poszczególnych reakcji z danego podpisu stanu gry.
     Wykres słupkowy pokazuje procent zwycięstw dla każdego ruchu (x, y).
@@ -284,7 +284,7 @@ def plot_tactic_effectiveness(signature_block):
     plt.tight_layout()
     plt.show()
 
-def plot_tactic_histogram(state_signatures):
+def plot_tactic_histogram(state_signatures): # nie udało się uruchomić
     """
     Tworzy histogram najczęściej występujących wektorów stanu gry (signature).
     Wejściem jest lista hashowalnych reprezentacji wyników helpers.gamestate(game).

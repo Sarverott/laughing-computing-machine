@@ -83,11 +83,11 @@ def axis_scoping(*single_or_many_arrays):
 def signat_for_statemove(scopes_state):
     return "-".join(
         [
-            zlib.adler32(str(chain_var))
+            str(zlib.adler32(str(chain_var).encode()))
             for chain_var in [
                 scopes_state[0],
                 scopes_state[1],
-                "".join(scopes_state[2])
+                "".join(map(str, scopes_state[2]))
             ]
         ]
     )

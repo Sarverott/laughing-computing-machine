@@ -3,6 +3,7 @@ import random
 from tickable import games, defines, helpers
 from collections import defaultdict
 
+tactics_for = "Evo" # games.
 games_record = []
 moves_mapping = []
 
@@ -86,6 +87,8 @@ def extract_reactive_signature(gamestate_vector, move):
     }
 
     return signature
+
+
 
 # def build_tactic_index(games=games_record, winner_name="Evo"):
 #     """

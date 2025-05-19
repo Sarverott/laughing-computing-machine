@@ -30,10 +30,11 @@ class TicTacToe:
         current_agent = self.whose_turn_it_is()
         is_moving, move = current_agent.choose_move(self)
         if is_moving and move:
-            tactic_sign = helpers.signat_for_statemove(self.scopes_state)
-            if tactic_sign not in resolvers.tactic_almanac:
-                resolvers.tactic_almanac[tactic_sign] = list()
-            resolvers.tactic_almanac[tactic_sign].append([move, self])
+            if resolvers.tactics_for == current_agent.name:
+                tactic_sign = helpers.signat_for_statemove(self.scopes_state)
+                if tactic_sign not in resolvers.moves_mapping:
+                    resolvers.moves_mapping[tactic_sign] = list()
+                resolvers.moves_mapping[tactic_sign].append([move, self], self)
             self.movestory.append((current_agent.name, move))
             self.move(current_agent.char, move)
             self.update()

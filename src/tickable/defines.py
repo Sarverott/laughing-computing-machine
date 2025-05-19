@@ -2,9 +2,9 @@ import numpy
 
 defines = [0, "", "void", 
     # blank spaces are threaten as third side
-    1, "O", "you",
+    1, "O", "protagonist",
     # main character with vector label in subjective namespace
-    -1, "X", "me"]
+    -1, "X", "antagonist"]
     # adversary with vector label in subjective namespace
 
 players = [

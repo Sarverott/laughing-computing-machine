@@ -1,6 +1,40 @@
 import numpy
 from tickable import defines
 
+def make_histogram(fitness_history, size=9):
+    """
+    Przekształca historię fitnessów z wielu generacji w histogram
+    szansy na wygraną i przegraną dopasowany do długości wykresu f(x), g(x).
+
+    Parameters:
+        fitness_history (list of list): lista fitnessów z każdej generacji
+        size (int): liczba punktów w osi x (domyślnie 9 = liczba tur w grze)
+
+    Returns:
+        dict: {"win": [...], "lose": [...]}
+    """
+    fitness_avg_per_gen = [numpy.mean(gen) if gen else 0.0 for gen in fitness_history]
+
+    # Skalowanie do 'size' punktów
+    if len(fitness_avg_per_gen) < size:
+        # Dublowanie wartości jeśli za mało pokoleń
+        expanded = numpy.interp(
+            numpy.linspace(0, len(fitness_avg_per_gen) - 1, size),
+            numpy.arange(len(fitness_avg_per_gen)),
+            fitness_avg_per_gen
+        )
+    else:
+        # Wybranie reprezentatywnych indeksów
+        x_indices = numpy.linspace(0, len(fitness_avg_per_gen) - 1, size).astype(int)
+        expanded = numpy.array(fitness_avg_per_gen)[x_indices]
+
+    expanded = numpy.clip(expanded, 0, 1)
+
+    return {
+        "win": expanded,
+        "lose": 1 - expanded
+    }
+
 def vector_scope(axisarray, actsides):
     # print("DEBUG:", actsides)
     # print("DEBUG:", axisarray)

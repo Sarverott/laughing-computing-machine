@@ -1,0 +1,3 @@
+[submodule "jupyter_examples"]
+	path = examples
+	url = https://gist.github.com/acc96f763f23d63bcb13d83d7adcb7f3.git

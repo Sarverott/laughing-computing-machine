@@ -18,6 +18,7 @@ class TicTacToe:
         self.ended = False
         self.antagonist = antagonist
         self.protagonist = protagonist
+        resolvers.games_record.append(self)
         # inne pola jak poprzednio...
 
     def whose_turn_it_is(self):

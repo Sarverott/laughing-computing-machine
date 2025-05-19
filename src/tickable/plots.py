@@ -4,6 +4,7 @@ from matplotlib import pyplot as plt
 import seaborn as sns
 from mpl_toolkits.mplot3d import Axes3D
 import matplotlib.gridspec as gridspec
+from collections import Counter
 
 def plot_fitness_3d(fitness_story):
     """
@@ -192,12 +193,12 @@ def make_histogram(fitness_history, size=9):
     }
 
 def plot_game_sequence(game):
-     """
-    Wyświetla sekwencję ruchów z `game.movestory` jako 3x3 siatkę plansz.
-    Wymaga, by `game` miał atrybuty:
-    - .movestory: lista (name, (x, y))
-    - .board: końcowy stan planszy (numpy.array)
-    """
+    #  """
+    # Wyświetla sekwencję ruchów z `game.movestory` jako 3x3 siatkę plansz.
+    # Wymaga, by `game` miał atrybuty:
+    # - .movestory: lista (name, (x, y))
+    # - .board: końcowy stan planszy (numpy.array)
+    # """
     states = []
     board = np.zeros_like(game.board)
     for who, move in game.movestory:
@@ -244,5 +245,60 @@ def plot_genome_similarity(population):
     plt.title("Macierz podobieństwa genotypów")
     plt.xlabel("Osobnik")
     plt.ylabel("Osobnik")
+    plt.tight_layout()
+    plt.show()
+
+def plot_tactic_effectiveness(signature_block):
+    """
+    Rysuje skuteczność poszczególnych reakcji z danego podpisu stanu gry.
+    Wykres słupkowy pokazuje procent zwycięstw dla każdego ruchu (x, y).
+    
+    Parameters:
+        signature_block: dict {(x, y): {"win": N, "loss": M}}
+    """
+    moves = []
+    win_rates = []
+    counts = []
+
+    for move, stats in signature_block.items():
+        total = stats["win"] + stats["loss"]
+        if total == 0:
+            continue
+        rate = stats["win"] / total
+        moves.append(str(move))
+        win_rates.append(rate)
+        counts.append(total)
+
+    plt.figure(figsize=(10, 6))
+    bars = plt.bar(moves, win_rates, color='teal', edgecolor='black')
+    plt.title("Skuteczność reakcji w danym stanie gry")
+    plt.xlabel("Ruch (x, y)")
+    plt.ylabel("Procent zwycięstw")
+    plt.ylim(0, 1)
+
+    # dodaj liczby wystąpień
+    for bar, count in zip(bars, counts):
+        height = bar.get_height()
+        plt.text(bar.get_x() + bar.get_width()/2.0, height + 0.02, f"{count}", ha='center', va='bottom')
+
+    plt.tight_layout()
+    plt.show()
+
+def plot_tactic_histogram(state_signatures):
+    """
+    Tworzy histogram najczęściej występujących wektorów stanu gry (signature).
+    Wejściem jest lista hashowalnych reprezentacji wyników helpers.gamestate(game).
+    """
+    signature_counts = Counter(state_signatures)
+    common_signatures = signature_counts.most_common(10)  # Top 10
+
+    labels = [str(sig) for sig, _ in common_signatures]
+    values = [count for _, count in common_signatures]
+
+    plt.figure(figsize=(12, 6))
+    plt.barh(range(len(labels)), values, color='teal')
+    plt.yticks(range(len(labels)), labels)
+    plt.xlabel("Liczba wystąpień")
+    plt.title("Najczęstsze wzorce stanów taktycznych (gamestate)")
     plt.tight_layout()
     plt.show()

@@ -1,9 +1,12 @@
 import numpy
 import random
-from tickable import games, defines
+from tickable import games, defines, helpers
+from collections import defaultdict
+
+games_record = []
 
 class PlayerAgent:
-    char = ""  # np. "X" lub "O"
+    char = ""  # numpy. "X" lub "O"
     name = "undefined"  # identyfikator do movestory
     def choose_move(self, game):
         raise NotImplementedError
@@ -50,6 +53,77 @@ class IntelligenceAgent(PlayerAgent):
 def VoidAgent():
     return None
 
+
+def extract_reactive_signature(gamestate_vector, move):
+    """
+    Tworzy podpis reaktywnego ruchu:
+    - znormalizowane wektory stanu (gamestate),
+    - pozycję ruchu (x, y),
+    - sygnatury do indeksowania.
+
+    Zwraca:
+    {
+        "reaction": (x, y),
+        "state_signature": {
+            "avg": [...],
+            "sum": [...],
+            "owners": [...]
+        }
+    }
+    """
+    avg_vector = [int(round((v[0] + 4) * 100)) for v in gamestate_vector]  # przesunięcie + zaokrąglenie
+    sum_vector = [int(v[1] + 4) for v in gamestate_vector]                # z -3/3 do 1/7
+    owner_counts = [tuple(v[2]) for v in gamestate_vector]                # numpy. (0, 1, 2)
+
+    signature = {
+        "reaction": tuple(move),
+        "state_signature": {
+            "avg": avg_vector,
+            "sum": sum_vector,
+            "owners": owner_counts
+        }
+    }
+
+    return signature
+
+def build_tactic_index(games=games_record, winner_name="Evo"):
+    """
+    Buduje indeks taktyczny z listy gier:
+    - Dla każdego ruchu tworzy podpis reaktywny.
+    - Grupuje dane pod względem skuteczności (win/loss) tego ruchu z danego stanu.
+
+    Parameters:
+        games: lista obiektów TicTacToe lub kompatybilnych z .movestory i .board
+        helpers_module: moduł zawierający funkcję `gamestate(game)`
+        winner_name: imię gracza, którego ruchy traktujemy jako "zwycięskie"
+
+    Returns:
+        tactic_index: dict[signature_hash][reaction] -> {"win": N, "loss": M}
+    """
+    tactic_index = defaultdict(lambda: defaultdict(lambda: {"win": 0, "loss": 0}))
+
+    # for game in games:
+    #     for turn_idx, (who, move) in enumerate(game.movestory):
+    #         # zapamiętujemy stan planszy PRZED ruchem
+    #         gamestate_vector = helpers.gamestate(game)
+
+    #         signature = extract_reactive_signature(gamestate_vector, move)
+    #         sig_key = (
+    #             tuple(signature["state_signature"]["avg"]),
+    #             tuple(signature["state_signature"]["sum"]),
+    #             tuple(signature["state_signature"]["owners"])
+    #         )
+    #         reaction = signature["reaction"]
+
+    #         # aktualizujemy planszę (po ruchu)
+    #         coord = move[0] * 3 + move[1]
+    #         current_board[coord] = -1 if who == "Evo" else 1
+
+    #         # aktualizuj statystykę skuteczności
+    #         outcome_key = "win" if game.wins == ("X" if winner_name == "Evo" else "O") else "loss"
+    #         tactic_index[sig_key][reaction][outcome_key] += 1
+
+    return tactic_index
 
 #def heuristic_move(game.board, strategy="centralized"):
 #    pass

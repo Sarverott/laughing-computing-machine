@@ -3,6 +3,8 @@ import random
 from tickable import resolvers, games, defines
 import numpy
 
+#global_record = []
+
 def chaos_evaluate(individual):
     antagonist = resolvers.EvolutionAgent(individual, char="X", name="Evo")
     protagonist = resolvers.ChaosAgent(char="O", name="Chaos")
@@ -14,10 +16,13 @@ def chaos_evaluate(individual):
 
     state = game.state(playername="antagonist")
     if state["winner"] == antagonist.char:
+        #global_record.append([game.movestory, game.statestory, individual])
         return (1.0,)
     elif state["winner"] == protagonist.char:
+        #global_record.append([game.movestory, game.statestory, individual])
         return (0.0,)
     else:
+        #global_record.append([game.movestory, game.statestory, individual])
         return (0.5,)
 
 class MutatorManager: # to można przerobić na PopulationManager

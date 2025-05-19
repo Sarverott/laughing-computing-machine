@@ -11,6 +11,14 @@ vars:
   PIP_PACKS: pandas matplotlib numpy notebook seaborn deap
 
 tasks:
+  publish:
+    cmds:
+      - git fetch
+      - git pull
+      - git submodule foreach git pull
+      - git add *
+      - git commit -m "automod[$(node -e 'console.log(`UNIXUSAT=${Date.now()}`)')]"
+      - git push
   select_ignore:
     cmds:
       - curl "https://gist.githubusercontent.com/Sarverott/a9933eea3dd0e4fc54e8ff275bd79dcf/raw/1480f29a978232284788a77162e08e73fb489fd6/selective_ignorance.sh" | bash -s git ruby,python,node 

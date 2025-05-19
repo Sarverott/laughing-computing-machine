@@ -53,14 +53,16 @@ def vector_scope(axisarray, actsides):
         numpy.int8(
             numpy.sum(axisarray)
         ),
-        [
-            len(
-                numpy.where(
-                    axisarray == int(force)
-                )[0]
-            )
-            for force in actsides
-        ]
+        tuple(
+            [
+                len(
+                    numpy.where(
+                        axisarray == int(force)
+                    )[0]
+                )
+                for force in actsides
+            ]
+        )
     ]
 
 def axis_scoping(*single_or_many_arrays):
